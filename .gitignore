@@ -1,0 +1,82 @@
+# Environment files
+.env
+.env.local
+.env.production
+*.env
+
+# Backend (.NET)
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+.vs/
+.vscode/
+*.swp
+*~.nib
+local.properties
+.DS_Store
+Thumbs.db
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.log
+
+# EF Core Migrations temp files
+**/Migrations/*.Designer.cs
+
+# Frontend (Angular/Node)
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.cache/
+
+# Test coverage
+coverage/
+*.coverage
+*.coveragexml
+TestResults/
+
+# Docker
+docker-compose.override.yml
+*.dockerignore.local
+
+# IDE
+.idea/
+*.iml
+.vscode/settings.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Generated files
+generated/
+temp/
+tmp/
+*.tmp
+
+# Secrets and keys
+*.key
+*.pem
+*.pfx
+secrets/
+certs/
+
+# Database
+*.db
+*.sqlite
+*.db-shm
+*.db-wal
+
+# S3/MinIO local data
+minio_data/
+
+# Logs
+logs/
+*.log
+log.txt

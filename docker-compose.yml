@@ -1,0 +1,145 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: personality-test-db
+    environment:
+      POSTGRES_DB: personalitytest
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/data/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - personality-test-network
+
+  # MinIO (S3-compatible storage)
+  minio:
+    image: minio/minio:latest
+    container_name: personality-test-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - personality-test-network
+
+  # Create MinIO bucket on startup
+  minio-init:
+    image: minio/mc:latest
+    container_name: personality-test-minio-init
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      /usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin;
+      /usr/bin/mc mb myminio/personality-test --ignore-existing;
+      /usr/bin/mc anonymous set public myminio/personality-test;
+      exit 0;
+      "
+    networks:
+      - personality-test-network
+
+  # .NET API
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: personality-test-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=personalitytest;Username=postgres;Password=postgres
+      - Jwt__SecretKey=your-super-secret-jwt-key-change-this-in-production-minimum-32-characters
+      - S3__ServiceUrl=http://minio:9000
+      - S3__AccessKey=minioadmin
+      - S3__SecretKey=minioadmin
+      - S3__BucketName=personality-test
+      - App__BaseUrl=http://localhost:4200
+      - App__FrontendUrl=http://localhost:4200
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    volumes:
+      - ./backend/logs:/app/logs
+    networks:
+      - personality-test-network
+
+  # Angular Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: personality-test-frontend
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+    networks:
+      - personality-test-network
+
+  # Nginx Reverse Proxy (Optional, for production)
+  nginx:
+    image: nginx:alpine
+    container_name: personality-test-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - api
+      - frontend
+    networks:
+      - personality-test-network
+    profiles:
+      - production
+
+  # MailHog (Email testing in development)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: personality-test-mailhog
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
+    networks:
+      - personality-test-network
+    profiles:
+      - development
+
+volumes:
+  postgres_data:
+    driver: local
+  minio_data:
+    driver: local
+
+networks:
+  personality-test-network:
+    driver: bridge

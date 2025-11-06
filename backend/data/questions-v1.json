@@ -1,0 +1,445 @@
+{
+  "version": "v1",
+  "totalQuestions": 60,
+  "dimensionDistribution": {
+    "EI": 15,
+    "SN": 15,
+    "TF": 15,
+    "JP": 15
+  },
+  "questions": [
+    {
+      "id": 1,
+      "text": "I feel energized after spending time with a large group of people.",
+      "dimension": "EI",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 2,
+      "text": "I prefer to work alone rather than in a team.",
+      "dimension": "EI",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 3,
+      "text": "I enjoy being the center of attention at social gatherings.",
+      "dimension": "EI",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 4,
+      "text": "I need time alone to recharge after social interactions.",
+      "dimension": "EI",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 5,
+      "text": "I find it easy to start conversations with strangers.",
+      "dimension": "EI",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 6,
+      "text": "I prefer small, intimate gatherings over large parties.",
+      "dimension": "EI",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 7,
+      "text": "I like to think out loud and discuss ideas with others.",
+      "dimension": "EI",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 8,
+      "text": "I prefer to think things through carefully before sharing my thoughts.",
+      "dimension": "EI",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 9,
+      "text": "I enjoy networking and meeting new people.",
+      "dimension": "EI",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 10,
+      "text": "I find phone calls more draining than text conversations.",
+      "dimension": "EI",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 11,
+      "text": "I am comfortable initiating social plans and activities.",
+      "dimension": "EI",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 12,
+      "text": "I prefer observing social situations before actively participating.",
+      "dimension": "EI",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 13,
+      "text": "I feel most alive when surrounded by people and activity.",
+      "dimension": "EI",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 14,
+      "text": "I value having a few close friends over many acquaintances.",
+      "dimension": "EI",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 15,
+      "text": "I am often described as outgoing and talkative.",
+      "dimension": "EI",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 16,
+      "text": "I focus on concrete facts and practical details.",
+      "dimension": "SN",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 17,
+      "text": "I enjoy exploring theoretical concepts and abstract ideas.",
+      "dimension": "SN",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 18,
+      "text": "I prefer proven methods over experimental approaches.",
+      "dimension": "SN",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 19,
+      "text": "I am drawn to innovative solutions and unconventional thinking.",
+      "dimension": "SN",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 20,
+      "text": "I pay close attention to details and specifics.",
+      "dimension": "SN",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 21,
+      "text": "I often think about future possibilities and potential outcomes.",
+      "dimension": "SN",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 22,
+      "text": "I rely on my past experiences when making decisions.",
+      "dimension": "SN",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 23,
+      "text": "I enjoy brainstorming and generating new ideas.",
+      "dimension": "SN",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 24,
+      "text": "I prefer step-by-step instructions and clear guidelines.",
+      "dimension": "SN",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 25,
+      "text": "I am comfortable with ambiguity and open-ended situations.",
+      "dimension": "SN",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 26,
+      "text": "I value practicality and real-world applications.",
+      "dimension": "SN",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 27,
+      "text": "I enjoy exploring patterns, connections, and meanings.",
+      "dimension": "SN",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 28,
+      "text": "I trust tangible evidence and observable facts.",
+      "dimension": "SN",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 29,
+      "text": "I often get inspired by imaginative and visionary concepts.",
+      "dimension": "SN",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 30,
+      "text": "I focus on what is rather than what could be.",
+      "dimension": "SN",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 31,
+      "text": "I make decisions based on objective logic and facts.",
+      "dimension": "TF",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 32,
+      "text": "I consider how my decisions will affect others' feelings.",
+      "dimension": "TF",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 33,
+      "text": "I prioritize efficiency and effectiveness over harmony.",
+      "dimension": "TF",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 34,
+      "text": "I value empathy and compassion in my interactions.",
+      "dimension": "TF",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 35,
+      "text": "I prefer direct, straightforward communication even if it seems blunt.",
+      "dimension": "TF",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 36,
+      "text": "I am careful to word things diplomatically to avoid hurt feelings.",
+      "dimension": "TF",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 37,
+      "text": "I analyze situations critically and look for logical flaws.",
+      "dimension": "TF",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 38,
+      "text": "I seek consensus and try to maintain group harmony.",
+      "dimension": "TF",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 39,
+      "text": "I value truth and fairness over personal relationships.",
+      "dimension": "TF",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 40,
+      "text": "I am strongly affected by the emotions of people around me.",
+      "dimension": "TF",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 41,
+      "text": "I focus on principles and policies rather than individual circumstances.",
+      "dimension": "TF",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 42,
+      "text": "I believe every situation deserves personal consideration.",
+      "dimension": "TF",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 43,
+      "text": "I am comfortable delivering criticism when necessary.",
+      "dimension": "TF",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 44,
+      "text": "I find it difficult to give negative feedback to others.",
+      "dimension": "TF",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 45,
+      "text": "I trust logical analysis over gut feelings.",
+      "dimension": "TF",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 46,
+      "text": "I prefer organized schedules and planned activities.",
+      "dimension": "JP",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 47,
+      "text": "I enjoy keeping my options open and being spontaneous.",
+      "dimension": "JP",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 48,
+      "text": "I like to complete tasks well before deadlines.",
+      "dimension": "JP",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 49,
+      "text": "I work best under pressure and close to deadlines.",
+      "dimension": "JP",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 50,
+      "text": "I feel uncomfortable with unfinished tasks and loose ends.",
+      "dimension": "JP",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 51,
+      "text": "I am comfortable changing plans at the last minute.",
+      "dimension": "JP",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 52,
+      "text": "I prefer having a clear plan before starting a project.",
+      "dimension": "JP",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 53,
+      "text": "I like to explore different options as I go along.",
+      "dimension": "JP",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 54,
+      "text": "I make lists and follow them systematically.",
+      "dimension": "JP",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 55,
+      "text": "I prefer flexible guidelines over rigid rules.",
+      "dimension": "JP",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 56,
+      "text": "I value structure and organization in my daily life.",
+      "dimension": "JP",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 57,
+      "text": "I enjoy adapting to changing circumstances and improvising.",
+      "dimension": "JP",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 58,
+      "text": "I feel more comfortable when decisions are made and settled.",
+      "dimension": "JP",
+      "direction": "Positive",
+      "weight": 1.0
+    },
+    {
+      "id": 59,
+      "text": "I prefer to keep gathering information before making a decision.",
+      "dimension": "JP",
+      "direction": "Negative",
+      "weight": 1.0
+    },
+    {
+      "id": 60,
+      "text": "I like having a predictable routine and clear expectations.",
+      "dimension": "JP",
+      "direction": "Positive",
+      "weight": 1.0
+    }
+  ],
+  "instructions": {
+    "title": "MBTI-Inspired Personality Assessment",
+    "description": "This assessment explores your personality preferences across four dimensions. There are no right or wrong answers.",
+    "responseScale": [
+      { "value": 1, "label": "Strongly Disagree" },
+      { "value": 2, "label": "Disagree" },
+      { "value": 3, "label": "Neutral" },
+      { "value": 4, "label": "Agree" },
+      { "value": 5, "label": "Strongly Agree" }
+    ],
+    "timeEstimate": "10-15 minutes",
+    "disclaimer": "This tool provides an MBTI-inspired personality assessment and is not affiliated with, endorsed by, or connected to The Myers-Briggs Company. Results are for educational and entertainment purposes only."
+  }
+}
