@@ -144,6 +144,9 @@ builder.Services.AddScoped<IPaymentService, StripePaymentService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITestRepository, TestRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IEntitlementRepository, EntitlementRepository>();
+builder.Services.AddScoped<IShareRepository, ShareRepository>();
 
 var app = builder.Build();
 
