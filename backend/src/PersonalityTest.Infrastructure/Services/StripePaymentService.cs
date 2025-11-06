@@ -75,7 +75,7 @@ public class StripePaymentService : IPaymentService
     {
         var stripeEvent = EventUtility.ParseEvent(eventJson);
 
-        if (stripeEvent.Type == Events.CheckoutSessionCompleted)
+        if (stripeEvent.Type == "checkout.session.completed")
         {
             var session = stripeEvent.Data.Object as Session;
             return Task.FromResult((session!.PaymentIntentId, "succeeded"));
