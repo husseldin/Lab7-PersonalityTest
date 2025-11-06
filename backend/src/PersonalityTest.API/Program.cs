@@ -147,6 +147,10 @@ builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IEntitlementRepository, EntitlementRepository>();
 builder.Services.AddScoped<IShareRepository, ShareRepository>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
+builder.Services.AddScoped<IFriendRepository, FriendRepository>();
+builder.Services.AddScoped<IInvitationRepository, InvitationRepository>();
+builder.Services.AddScoped<IPricingConfigRepository, PricingConfigRepository>();
 
 var app = builder.Build();
 
