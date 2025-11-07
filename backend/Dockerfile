@@ -1,21 +1,25 @@
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
+WORKDIR /app
 
-# Copy project files
-COPY ["src/PersonalityTest.Domain/PersonalityTest.Domain.csproj", "src/PersonalityTest.Domain/"]
-COPY ["src/PersonalityTest.Application/PersonalityTest.Application.csproj", "src/PersonalityTest.Application/"]
-COPY ["src/PersonalityTest.Infrastructure/PersonalityTest.Infrastructure.csproj", "src/PersonalityTest.Infrastructure/"]
-COPY ["src/PersonalityTest.API/PersonalityTest.API.csproj", "src/PersonalityTest.API/"]
+# Copy project files for restore
+COPY ["src/PersonalityTest.Domain/PersonalityTest.Domain.csproj", "PersonalityTest.Domain/"]
+COPY ["src/PersonalityTest.Application/PersonalityTest.Application.csproj", "PersonalityTest.Application/"]
+COPY ["src/PersonalityTest.Infrastructure/PersonalityTest.Infrastructure.csproj", "PersonalityTest.Infrastructure/"]
+COPY ["src/PersonalityTest.API/PersonalityTest.API.csproj", "PersonalityTest.API/"]
 
 # Restore dependencies for API project (includes all dependencies)
-RUN dotnet restore "src/PersonalityTest.API/PersonalityTest.API.csproj"
+RUN dotnet restore "PersonalityTest.API/PersonalityTest.API.csproj"
 
-# Copy everything else
-COPY . .
+# Copy source files
+COPY ["src/PersonalityTest.Domain/", "PersonalityTest.Domain/"]
+COPY ["src/PersonalityTest.Application/", "PersonalityTest.Application/"]
+COPY ["src/PersonalityTest.Infrastructure/", "PersonalityTest.Infrastructure/"]
+COPY ["src/PersonalityTest.API/", "PersonalityTest.API/"]
+COPY ["data/", "data/"]
 
 # Build and publish
-WORKDIR "/src/src/PersonalityTest.API"
+WORKDIR "/app/PersonalityTest.API"
 RUN dotnet build "PersonalityTest.API.csproj" -c Release -o /app/build
 RUN dotnet publish "PersonalityTest.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
