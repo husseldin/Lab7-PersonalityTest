@@ -2,15 +2,14 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy solution and project files
-COPY ["PersonalityTest.sln", "./"]
+# Copy project files
 COPY ["src/PersonalityTest.Domain/PersonalityTest.Domain.csproj", "src/PersonalityTest.Domain/"]
 COPY ["src/PersonalityTest.Application/PersonalityTest.Application.csproj", "src/PersonalityTest.Application/"]
 COPY ["src/PersonalityTest.Infrastructure/PersonalityTest.Infrastructure.csproj", "src/PersonalityTest.Infrastructure/"]
 COPY ["src/PersonalityTest.API/PersonalityTest.API.csproj", "src/PersonalityTest.API/"]
 
-# Restore dependencies
-RUN dotnet restore "PersonalityTest.sln"
+# Restore dependencies for API project (includes all dependencies)
+RUN dotnet restore "src/PersonalityTest.API/PersonalityTest.API.csproj"
 
 # Copy everything else
 COPY . .
