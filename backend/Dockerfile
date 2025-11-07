@@ -55,8 +55,10 @@ RUN apt-get update && apt-get install -y \
 
 # Copy published app
 COPY --from=build /app/publish .
-# Copy Playwright browsers
-COPY --from=build /root/.cache/ms-playwright /root/.cache/ms-playwright
+# Copy Playwright browsers from build stage
+COPY --from=build /ms-playwright /ms-playwright
+# Set Playwright browser path for runtime
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 # Expose port
 EXPOSE 5000
