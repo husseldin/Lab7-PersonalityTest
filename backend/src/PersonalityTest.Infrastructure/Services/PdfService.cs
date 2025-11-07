@@ -1,48 +1,29 @@
-using Microsoft.Playwright;
 using PersonalityTest.Application.Interfaces;
 using PersonalityTest.Domain.Entities;
 using PersonalityTest.Domain.ValueObjects;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 
 namespace PersonalityTest.Infrastructure.Services;
 
 public class PdfService : IPdfService
 {
     private readonly ITestRepository _testRepository;
-    private static IPlaywright? _playwright;
-    private static IBrowser? _browser;
-    private static readonly SemaphoreSlim _initLock = new(1, 1);
+
+    static PdfService()
+    {
+        // Set license type for QuestPDF (Community license is free for open source)
+        QuestPDF.Settings.License = LicenseType.Community;
+    }
 
     public PdfService(ITestRepository testRepository)
     {
         _testRepository = testRepository;
     }
 
-    private async Task EnsureBrowserInitializedAsync()
-    {
-        if (_browser != null) return;
-
-        await _initLock.WaitAsync();
-        try
-        {
-            if (_browser != null) return;
-
-            _playwright = await Playwright.CreateAsync();
-            _browser = await _playwright.Chromium.LaunchAsync(new()
-            {
-                Headless = true,
-                Args = new[] { "--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage" }
-            });
-        }
-        finally
-        {
-            _initLock.Release();
-        }
-    }
-
     public async Task<byte[]> GenerateReportPdfAsync(Guid attemptId, bool isComplete)
     {
-        await EnsureBrowserInitializedAsync();
-
         var attempt = await _testRepository.GetAttemptByIdAsync(attemptId)
             ?? throw new ArgumentException("Test attempt not found");
 
@@ -51,157 +32,174 @@ public class PdfService : IPdfService
 
         var personalityType = PersonalityType.FromCode(attempt.ResultType);
 
-        // Generate HTML content for the report
-        var html = GenerateReportHtml(attempt, personalityType, isComplete);
-
-        // Create a new page and generate PDF
-        var page = await _browser!.NewPageAsync();
-        try
+        var document = Document.Create(container =>
         {
-            await page.SetContentAsync(html);
-            var pdfBytes = await page.PdfAsync(new()
+            container.Page(page =>
             {
-                Format = "A4",
-                PrintBackground = true,
-                Margin = new()
+                page.Size(PageSizes.A4);
+                page.Margin(40);
+                page.PageColor(Colors.White);
+                page.DefaultTextStyle(x => x.FontSize(11).FontFamily("Segoe UI"));
+
+                page.Header().Element(c => ComposeHeader(c, personalityType, attempt, isComplete));
+                page.Content().Element(c => ComposeContent(c, attempt, personalityType, isComplete));
+                page.Footer().Element(ComposeFooter);
+            });
+        });
+
+        return document.GeneratePdf();
+    }
+
+    private void ComposeHeader(IContainer container, PersonalityType personalityType, TestAttempt attempt, bool isComplete)
+    {
+        container.Column(column =>
+        {
+            column.Item().BorderBottom(3).BorderColor("#4CAF50").PaddingBottom(15).Column(header =>
+            {
+                header.Item().AlignCenter().Text("Personality Assessment Report")
+                    .FontSize(28).FontColor("#4CAF50").Bold();
+
+                header.Item().AlignCenter().PaddingTop(5).Text(text =>
                 {
-                    Top = "20mm",
-                    Bottom = "20mm",
-                    Left = "20mm",
-                    Right = "20mm"
-                }
+                    text.Span("Test completed on ");
+                    text.Span(attempt.CompletedAt?.ToString("MMMM dd, yyyy") ?? "N/A").SemiBold();
+                });
+
+                header.Item().AlignCenter().PaddingTop(3).Text(isComplete ? "Premium Report" : "Basic Report")
+                    .FontSize(10).FontColor(Colors.Grey.Darken2);
             });
 
-            return pdfBytes;
-        }
-        finally
+            // Result Box
+            column.Item().PaddingTop(20).Background("#667eea").Padding(25).Column(resultBox =>
+            {
+                resultBox.Item().AlignCenter().Text(personalityType.Code)
+                    .FontSize(48).FontColor(Colors.White).Bold();
+
+                resultBox.Item().AlignCenter().PaddingTop(8).Text(personalityType.GetName())
+                    .FontSize(24).FontColor(Colors.White);
+
+                resultBox.Item().AlignCenter().PaddingTop(8).Text(personalityType.GetDescription())
+                    .FontSize(14).FontColor(Colors.White);
+            });
+        });
+    }
+
+    private void ComposeContent(IContainer container, TestAttempt attempt, PersonalityType personalityType, bool isComplete)
+    {
+        container.PaddingVertical(20).Column(column =>
         {
-            await page.CloseAsync();
-        }
+            // Personality Dimensions Section
+            column.Item().PaddingBottom(20).Column(section =>
+            {
+                section.Item().Text("Personality Dimensions")
+                    .FontSize(18).FontColor("#4CAF50").Bold();
+
+                section.Item().PaddingTop(15).Column(dimensions =>
+                {
+                    ComposeScoreBar(dimensions, "Extraversion (E) vs Introversion (I)",
+                        attempt.ScoreE, attempt.ScoreI, "E", "I");
+                    ComposeScoreBar(dimensions, "Sensing (S) vs Intuition (N)",
+                        attempt.ScoreS, attempt.ScoreN, "S", "N");
+                    ComposeScoreBar(dimensions, "Thinking (T) vs Feeling (F)",
+                        attempt.ScoreT, attempt.ScoreF, "T", "F");
+                    ComposeScoreBar(dimensions, "Judging (J) vs Perceiving (P)",
+                        attempt.ScoreJ, attempt.ScoreP, "J", "P");
+                });
+            });
+
+            if (isComplete)
+            {
+                // Career Recommendations
+                column.Item().PaddingBottom(15).Column(section =>
+                {
+                    section.Item().Text("Career Recommendations")
+                        .FontSize(18).FontColor("#4CAF50").Bold();
+
+                    section.Item().PaddingTop(10).Text($"Based on your {personalityType.Code} personality type, you may thrive in careers that leverage your natural strengths:")
+                        .LineHeight(1.5f);
+
+                    section.Item().PaddingTop(8).PaddingLeft(15).Column(list =>
+                    {
+                        list.Item().Text("• Strategic planning and analysis roles").LineHeight(1.5f);
+                        list.Item().Text("• Leadership and management positions").LineHeight(1.5f);
+                        list.Item().Text("• Innovation and problem-solving opportunities").LineHeight(1.5f);
+                        list.Item().Text("• Independent work with creative freedom").LineHeight(1.5f);
+                    });
+                });
+
+                // Growth Recommendations
+                column.Item().PaddingBottom(15).Column(section =>
+                {
+                    section.Item().Text("Growth Recommendations")
+                        .FontSize(18).FontColor("#4CAF50").Bold();
+
+                    section.Item().PaddingTop(10).PaddingLeft(15).Column(list =>
+                    {
+                        list.Item().Text("• Continue developing your natural strengths").LineHeight(1.5f);
+                        list.Item().Text("• Practice balancing different personality aspects").LineHeight(1.5f);
+                        list.Item().Text("• Seek opportunities for personal growth").LineHeight(1.5f);
+                        list.Item().Text("• Build relationships with diverse personality types").LineHeight(1.5f);
+                    });
+                });
+
+                // Relationship Insights
+                column.Item().Column(section =>
+                {
+                    section.Item().Text("Relationship Insights")
+                        .FontSize(18).FontColor("#4CAF50").Bold();
+
+                    section.Item().PaddingTop(10).Text(
+                        $"Understanding your personality type can help improve your relationships both personally and professionally. " +
+                        $"Your {personalityType.Code} type brings unique strengths to relationships and team dynamics.")
+                        .LineHeight(1.5f);
+                });
+            }
+            else
+            {
+                // Premium Upgrade Notice
+                column.Item().Background("#fff3cd").Border(2).BorderColor("#ffc107")
+                    .Padding(20).AlignCenter().Text(
+                        "Unlock complete career insights, growth recommendations, and relationship guidance with the premium report.")
+                    .FontSize(12).FontColor("#856404").Bold();
+            }
+        });
     }
 
-    private string GenerateReportHtml(TestAttempt attempt, PersonalityType personalityType, bool isComplete)
+    private void ComposeScoreBar(ColumnDescriptor column, string label, int scoreA, int scoreB, string labelA, string labelB)
     {
-        var completedDate = attempt.CompletedAt?.ToString("MMMM dd, yyyy") ?? "N/A";
+        column.Item().PaddingBottom(15).Column(dimension =>
+        {
+            dimension.Item().Text(label).FontSize(11).SemiBold();
 
-        var basicContent = $@"
-            <div class='section'>
-                <h2>Personality Dimensions</h2>
-                <div class='dimension'>
-                    <div class='dimension-label'>Extraversion (E) vs Introversion (I)</div>
-                    <div class='score-bar'>
-                        <div class='score-fill' style='width: {GetPercentage(attempt.ScoreE, attempt.ScoreI)}%'></div>
-                    </div>
-                    <div class='dimension-score'>E: {attempt.ScoreE} | I: {attempt.ScoreI}</div>
-                </div>
-                <div class='dimension'>
-                    <div class='dimension-label'>Sensing (S) vs Intuition (N)</div>
-                    <div class='score-bar'>
-                        <div class='score-fill' style='width: {GetPercentage(attempt.ScoreS, attempt.ScoreN)}%'></div>
-                    </div>
-                    <div class='dimension-score'>S: {attempt.ScoreS} | N: {attempt.ScoreN}</div>
-                </div>
-                <div class='dimension'>
-                    <div class='dimension-label'>Thinking (T) vs Feeling (F)</div>
-                    <div class='score-bar'>
-                        <div class='score-fill' style='width: {GetPercentage(attempt.ScoreT, attempt.ScoreF)}%'></div>
-                    </div>
-                    <div class='dimension-score'>T: {attempt.ScoreT} | F: {attempt.ScoreF}</div>
-                </div>
-                <div class='dimension'>
-                    <div class='dimension-label'>Judging (J) vs Perceiving (P)</div>
-                    <div class='score-bar'>
-                        <div class='score-fill' style='width: {GetPercentage(attempt.ScoreJ, attempt.ScoreP)}%'></div>
-                    </div>
-                    <div class='dimension-score'>J: {attempt.ScoreJ} | P: {attempt.ScoreP}</div>
-                </div>
-            </div>";
+            // Score bar
+            dimension.Item().PaddingTop(5).Height(25).Background(Colors.Grey.Lighten3).Row(row =>
+            {
+                var total = scoreA + scoreB;
+                var percentage = total == 0 ? 50 : (scoreA * 100.0 / total);
 
-        var completeContent = isComplete ? $@"
-            <div class='section'>
-                <h2>Career Recommendations</h2>
-                <p>Based on your {personalityType.Code} personality type, you may thrive in careers that leverage your natural strengths:</p>
-                <ul>
-                    <li>Strategic planning and analysis roles</li>
-                    <li>Leadership and management positions</li>
-                    <li>Innovation and problem-solving opportunities</li>
-                    <li>Independent work with creative freedom</li>
-                </ul>
-            </div>
-            <div class='section'>
-                <h2>Growth Recommendations</h2>
-                <ul>
-                    <li>Continue developing your natural strengths</li>
-                    <li>Practice balancing different personality aspects</li>
-                    <li>Seek opportunities for personal growth</li>
-                    <li>Build relationships with diverse personality types</li>
-                </ul>
-            </div>
-            <div class='section'>
-                <h2>Relationship Insights</h2>
-                <p>Understanding your personality type can help improve your relationships both personally and professionally.
-                Your {personalityType.Code} type brings unique strengths to relationships and team dynamics.</p>
-            </div>" :
-            "<div class='premium-notice'>Unlock complete career insights, growth recommendations, and relationship guidance with the premium report.</div>";
+                row.RelativeItem((float)percentage).Background("#4CAF50");
+                row.RelativeItem((float)(100 - percentage));
+            });
 
-        return $@"
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <title>Personality Test Report - {personalityType.Code}</title>
-    <style>
-        body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; color: #333; }}
-        .header {{ text-align: center; margin-bottom: 30px; border-bottom: 3px solid #4CAF50; padding-bottom: 20px; }}
-        .header h1 {{ color: #4CAF50; margin: 10px 0; font-size: 32px; }}
-        .header .subtitle {{ color: #666; font-size: 16px; }}
-        .result-box {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; text-align: center; margin: 20px 0; }}
-        .result-box h2 {{ margin: 0 0 10px 0; font-size: 48px; }}
-        .result-box .type-name {{ font-size: 24px; margin-bottom: 10px; }}
-        .result-box .description {{ font-size: 16px; opacity: 0.9; }}
-        .section {{ margin: 30px 0; page-break-inside: avoid; }}
-        .section h2 {{ color: #4CAF50; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }}
-        .dimension {{ margin: 20px 0; }}
-        .dimension-label {{ font-weight: bold; margin-bottom: 5px; }}
-        .score-bar {{ height: 30px; background: #e0e0e0; border-radius: 15px; overflow: hidden; position: relative; }}
-        .score-fill {{ height: 100%; background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%); transition: width 0.3s; }}
-        .dimension-score {{ margin-top: 5px; color: #666; font-size: 14px; }}
-        .premium-notice {{ background: #fff3cd; border: 2px solid #ffc107; padding: 20px; border-radius: 8px; text-align: center; color: #856404; font-weight: bold; }}
-        .footer {{ text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #999; font-size: 12px; }}
-        ul {{ padding-left: 20px; }}
-        li {{ margin: 10px 0; line-height: 1.6; }}
-    </style>
-</head>
-<body>
-    <div class='header'>
-        <h1>Personality Assessment Report</h1>
-        <div class='subtitle'>Test completed on {completedDate}</div>
-        <div class='subtitle'>{(isComplete ? "Premium Report" : "Basic Report")}</div>
-    </div>
-
-    <div class='result-box'>
-        <h2>{personalityType.Code}</h2>
-        <div class='type-name'>{personalityType.GetName()}</div>
-        <div class='description'>{personalityType.GetDescription()}</div>
-    </div>
-
-    {basicContent}
-
-    {completeContent}
-
-    <div class='footer'>
-        <p><strong>Disclaimer:</strong> This assessment is inspired by personality type theory but is not affiliated with
-        the Myers-Briggs Type Indicator® or The Myers & Briggs Foundation. Results should be used for personal growth
-        and self-reflection, not as definitive psychological evaluations.</p>
-        <p>© {DateTime.UtcNow.Year} Personality Test Platform. All rights reserved.</p>
-    </div>
-</body>
-</html>";
+            dimension.Item().PaddingTop(5).Text($"{labelA}: {scoreA}  |  {labelB}: {scoreB}")
+                .FontSize(10).FontColor(Colors.Grey.Darken1);
+        });
     }
 
-    private double GetPercentage(int scoreA, int scoreB)
+    private void ComposeFooter(IContainer container)
     {
-        var total = scoreA + scoreB;
-        return total == 0 ? 50 : (scoreA * 100.0 / total);
+        container.BorderTop(1).BorderColor(Colors.Grey.Lighten2).PaddingTop(15).Column(footer =>
+        {
+            footer.Item().AlignCenter().Text(text =>
+            {
+                text.Span("Disclaimer: ").Bold();
+                text.Span("This assessment is inspired by personality type theory but is not affiliated with " +
+                         "the Myers-Briggs Type Indicator® or The Myers & Briggs Foundation. Results should be used for personal growth " +
+                         "and self-reflection, not as definitive psychological evaluations.");
+            }).FontSize(9).FontColor(Colors.Grey.Darken1).LineHeight(1.3f);
+
+            footer.Item().AlignCenter().PaddingTop(8).Text($"© {DateTime.UtcNow.Year} Personality Test Platform. All rights reserved.")
+                .FontSize(9).FontColor(Colors.Grey.Darken1);
+        });
     }
 }
