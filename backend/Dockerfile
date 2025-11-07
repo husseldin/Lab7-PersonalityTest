@@ -7,15 +7,18 @@ COPY ["src/PersonalityTest.Domain/PersonalityTest.Domain.csproj", "PersonalityTe
 COPY ["src/PersonalityTest.Application/PersonalityTest.Application.csproj", "PersonalityTest.Application/"]
 COPY ["src/PersonalityTest.Infrastructure/PersonalityTest.Infrastructure.csproj", "PersonalityTest.Infrastructure/"]
 COPY ["src/PersonalityTest.API/PersonalityTest.API.csproj", "PersonalityTest.API/"]
+COPY ["InstallPlaywright/InstallPlaywright.csproj", "InstallPlaywright/"]
 
-# Restore dependencies for API project (includes all dependencies)
+# Restore dependencies
 RUN dotnet restore "PersonalityTest.API/PersonalityTest.API.csproj"
+RUN dotnet restore "InstallPlaywright/InstallPlaywright.csproj"
 
 # Copy source files
 COPY ["src/PersonalityTest.Domain/", "PersonalityTest.Domain/"]
 COPY ["src/PersonalityTest.Application/", "PersonalityTest.Application/"]
 COPY ["src/PersonalityTest.Infrastructure/", "PersonalityTest.Infrastructure/"]
 COPY ["src/PersonalityTest.API/", "PersonalityTest.API/"]
+COPY ["InstallPlaywright/", "InstallPlaywright/"]
 COPY ["data/", "data/"]
 
 # Build and publish
@@ -23,12 +26,10 @@ WORKDIR "/app/PersonalityTest.API"
 RUN dotnet build "PersonalityTest.API.csproj" -c Release -o /app/build
 RUN dotnet publish "PersonalityTest.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Install Playwright browsers using dotnet tool (official recommended method)
-WORKDIR /app
+# Install Playwright browsers using our helper app
+WORKDIR /app/InstallPlaywright
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-RUN dotnet new tool-manifest || true
-RUN dotnet tool install Microsoft.Playwright.CLI
-RUN dotnet tool run playwright install chromium --with-deps
+RUN dotnet run --project InstallPlaywright.csproj
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
