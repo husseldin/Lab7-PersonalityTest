@@ -139,6 +139,7 @@ builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 builder.Services.AddScoped<IFileStorageService, S3FileStorageService>();
 builder.Services.AddScoped<IPaymentService, StripePaymentService>();
+builder.Services.AddScoped<IPdfService, PdfService>();
 
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();

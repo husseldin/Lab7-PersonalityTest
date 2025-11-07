@@ -23,12 +23,41 @@ WORKDIR "/app/PersonalityTest.API"
 RUN dotnet build "PersonalityTest.API.csproj" -c Release -o /app/build
 RUN dotnet publish "PersonalityTest.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
+# Install Playwright browsers
+WORKDIR /app/publish
+RUN apt-get update && apt-get install -y wget
+RUN dotnet tool install --global Microsoft.Playwright.CLI
+ENV PATH="${PATH}:/root/.dotnet/tools"
+RUN playwright install chromium
+RUN playwright install-deps chromium
+
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
+# Install Chromium dependencies
+RUN apt-get update && apt-get install -y \
+    libnss3 \
+    libnspr4 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libasound2 \
+    libatspi2.0-0 \
+    libxshmfence1 \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy published app
 COPY --from=build /app/publish .
+# Copy Playwright browsers
+COPY --from=build /root/.cache/ms-playwright /root/.cache/ms-playwright
 
 # Expose port
 EXPOSE 5000
