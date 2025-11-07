@@ -128,7 +128,7 @@ builder.Services.AddSingleton<IAmazonS3>(sp =>
 
 // FluentValidation
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddValidatorsFromAssemblyContaining<IScoringService>();
 
 // Application Services
 builder.Services.AddScoped<IScoringService, ScoringService>();
