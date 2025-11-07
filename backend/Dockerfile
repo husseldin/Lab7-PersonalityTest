@@ -23,15 +23,12 @@ WORKDIR "/app/PersonalityTest.API"
 RUN dotnet build "PersonalityTest.API.csproj" -c Release -o /app/build
 RUN dotnet publish "PersonalityTest.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Install PowerShell for Playwright installation
-RUN apt-get update && apt-get install -y wget apt-transport-https software-properties-common
-RUN wget -q https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb
-RUN dpkg -i packages-microsoft-prod.deb
-RUN apt-get update && apt-get install -y powershell
-
-# Install Playwright browsers using the package's build script
-WORKDIR /app/publish
-RUN pwsh /root/.nuget/packages/microsoft.playwright/*/tools/net*/any/playwright.ps1 install chromium --with-deps
+# Install Playwright browsers using dotnet tool (official recommended method)
+WORKDIR /app
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+RUN dotnet new tool-manifest || true
+RUN dotnet tool install Microsoft.Playwright.CLI
+RUN dotnet tool run playwright install chromium --with-deps
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
