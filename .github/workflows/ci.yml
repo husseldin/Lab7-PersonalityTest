@@ -86,8 +86,7 @@ jobs:
         file: ./backend/Dockerfile
         push: false
         tags: personality-test-api:latest
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        no-cache: true
 
     - name: Build Frontend Docker Image
       uses: docker/build-push-action@v5
@@ -96,8 +95,7 @@ jobs:
         file: ./frontend/Dockerfile
         push: false
         tags: personality-test-frontend:latest
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        no-cache: true
 
   security-scan:
     name: Security Scan
