@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth/auth-options'
 import { prisma } from '@/lib/prisma'
 
 export async function GET() {
@@ -26,7 +26,7 @@ export async function GET() {
             description: true
           }
         },
-        entitlements: {
+        entitlement: {
           where: {
             expiresAt: {
               gt: new Date()
@@ -34,7 +34,7 @@ export async function GET() {
           },
           select: {
             id: true,
-            entitlementType: true
+            type: true
           }
         }
       },
@@ -51,7 +51,7 @@ export async function GET() {
       createdAt: attempt.createdAt,
       completedAt: attempt.completedAt,
       questionVersion: attempt.questionVersion,
-      hasPremiumAccess: attempt.entitlements.length > 0,
+      hasPremiumAccess: !!attempt.entitlement,
       scores: attempt.status === 'COMPLETED' ? {
         EI: { E: attempt.scoreE, I: attempt.scoreI },
         SN: { S: attempt.scoreS, N: attempt.scoreN },

@@ -45,6 +45,7 @@ export default function ResultsPage() {
     if (status === 'authenticated') {
       fetchResults()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, attemptId])
 
   const fetchResults = async () => {

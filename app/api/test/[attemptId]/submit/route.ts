@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth/auth-options'
 import { prisma } from '@/lib/prisma'
 
 // Convert Likert scale (1-5) to score (-2 to +2)
@@ -87,7 +87,7 @@ export async function POST(
     // Calculate scores for each dimension
     for (const answer of attempt.answers) {
       const question = answer.question
-      const rawScore = likertToScore(answer.value)
+      const rawScore = likertToScore(answer.answer)
       const weightedScore = rawScore * question.weight
 
       // Apply direction and accumulate scores

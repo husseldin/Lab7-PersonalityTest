@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth/auth-options'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
@@ -73,13 +73,13 @@ export async function POST(
         }
       },
       update: {
-        value,
+        answer: value,
         updatedAt: new Date()
       },
       create: {
         attemptId: params.attemptId,
         questionId,
-        value
+        answer: value
       }
     })
 

@@ -72,8 +72,8 @@ export async function POST(request: Request) {
         await prisma.entitlement.create({
           data: {
             userId,
-            testAttemptId: attemptId,
-            entitlementType: 'PREMIUM_REPORT',
+            attemptId: attemptId,
+            type: 'COMPLETE_REPORT',
             expiresAt: new Date('2099-12-31') // Lifetime access
           }
         })

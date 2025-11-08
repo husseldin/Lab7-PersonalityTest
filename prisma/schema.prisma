@@ -121,9 +121,11 @@ model Payment {
   id                    String        @id @default(cuid())
   userId                String
   attemptId             String
-  stripePaymentIntentId String        @unique
-  amount                Int
-  currency              String        @default("usd")
+  stripeSessionId       String?       @unique
+  stripePaymentIntentId String?       @unique
+  paidAt                DateTime?
+  amount                Decimal       @db.Decimal(10, 2)
+  currency              String        @default("USD")
   status                PaymentStatus @default(PENDING)
   createdAt             DateTime      @default(now())
   updatedAt             DateTime      @updatedAt

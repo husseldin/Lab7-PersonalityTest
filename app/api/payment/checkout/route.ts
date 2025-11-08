@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth/auth-options'
 import { prisma } from '@/lib/prisma'
 import { stripe } from '@/lib/stripe'
 import { z } from 'zod'
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     const existingEntitlement = await prisma.entitlement.findFirst({
       where: {
         userId: session.user.id,
-        testAttemptId: attemptId,
+        attemptId: attemptId,
         expiresAt: {
           gt: new Date()
         }
@@ -97,7 +97,7 @@ export async function POST(request: Request) {
     await prisma.payment.create({
       data: {
         userId: session.user.id,
-        testAttemptId: attemptId,
+        attemptId: attemptId,
         stripeSessionId: checkoutSession.id,
         amount: 9.90,
         currency: 'USD',

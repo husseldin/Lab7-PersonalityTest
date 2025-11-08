@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth/auth-options'
 import { prisma } from '@/lib/prisma'
 import { generatePDF } from '@/lib/services/pdf-generator'
 
@@ -63,7 +63,7 @@ export async function GET(
     const entitlement = await prisma.entitlement.findFirst({
       where: {
         userId: session.user.id,
-        testAttemptId: params.attemptId,
+        attemptId: params.attemptId,
         expiresAt: {
           gt: new Date()
         }
@@ -94,7 +94,7 @@ export async function GET(
     )
 
     // Return PDF as download
-    return new NextResponse(pdfBuffer, {
+    return new Response(new Uint8Array(pdfBuffer), {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',

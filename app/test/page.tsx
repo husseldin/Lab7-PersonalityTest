@@ -34,6 +34,7 @@ export default function TestPage() {
     if (status === 'authenticated') {
       startTest()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status])
 
   const startTest = async () => {
