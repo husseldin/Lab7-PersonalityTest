@@ -1,0 +1,542 @@
+[
+  {
+    "id": 1,
+    "dimension": "EI",
+    "question": "At a party, you are more likely to:",
+    "options": [
+      { "text": "Spend time with a small group of close friends", "type": "I" },
+      { "text": "Mingle with many different people", "type": "E" }
+    ]
+  },
+  {
+    "id": 2,
+    "dimension": "EI",
+    "question": "After a long day, you prefer to:",
+    "options": [
+      { "text": "Spend time alone to recharge", "type": "I" },
+      { "text": "Spend time with others to recharge", "type": "E" }
+    ]
+  },
+  {
+    "id": 3,
+    "dimension": "EI",
+    "question": "When working on a project, you prefer to:",
+    "options": [
+      { "text": "Work independently", "type": "I" },
+      { "text": "Collaborate with a team", "type": "E" }
+    ]
+  },
+  {
+    "id": 4,
+    "dimension": "EI",
+    "question": "In conversations, you tend to:",
+    "options": [
+      { "text": "Listen more than you speak", "type": "I" },
+      { "text": "Speak more than you listen", "type": "E" }
+    ]
+  },
+  {
+    "id": 5,
+    "dimension": "EI",
+    "question": "You feel more energized when:",
+    "options": [
+      { "text": "Spending quiet time reflecting", "type": "I" },
+      { "text": "Being around lots of people and activity", "type": "E" }
+    ]
+  },
+  {
+    "id": 6,
+    "dimension": "EI",
+    "question": "At social gatherings, you:",
+    "options": [
+      { "text": "Stay on the sidelines and observe", "type": "I" },
+      { "text": "Jump right in and engage with everyone", "type": "E" }
+    ]
+  },
+  {
+    "id": 7,
+    "dimension": "EI",
+    "question": "When making friends, you:",
+    "options": [
+      { "text": "Have a few deep, meaningful friendships", "type": "I" },
+      { "text": "Have many friends and acquaintances", "type": "E" }
+    ]
+  },
+  {
+    "id": 8,
+    "dimension": "EI",
+    "question": "During breaks at work or school, you:",
+    "options": [
+      { "text": "Prefer to have some alone time", "type": "I" },
+      { "text": "Seek out others to chat with", "type": "E" }
+    ]
+  },
+  {
+    "id": 9,
+    "dimension": "EI",
+    "question": "You would describe yourself as more:",
+    "options": [
+      { "text": "Reserved and private", "type": "I" },
+      { "text": "Outgoing and expressive", "type": "E" }
+    ]
+  },
+  {
+    "id": 10,
+    "dimension": "EI",
+    "question": "When meeting new people, you:",
+    "options": [
+      { "text": "Wait for them to approach you first", "type": "I" },
+      { "text": "Introduce yourself readily", "type": "E" }
+    ]
+  },
+  {
+    "id": 11,
+    "dimension": "EI",
+    "question": "You prefer phone calls that are:",
+    "options": [
+      { "text": "Brief and to the point", "type": "I" },
+      { "text": "Long and chatty", "type": "E" }
+    ]
+  },
+  {
+    "id": 12,
+    "dimension": "EI",
+    "question": "In group settings, you:",
+    "options": [
+      { "text": "Think before speaking", "type": "I" },
+      { "text": "Think out loud while speaking", "type": "E" }
+    ]
+  },
+  {
+    "id": 13,
+    "dimension": "EI",
+    "question": "Your ideal weekend involves:",
+    "options": [
+      { "text": "Quiet activities at home", "type": "I" },
+      { "text": "Going out and being social", "type": "E" }
+    ]
+  },
+  {
+    "id": 14,
+    "dimension": "EI",
+    "question": "When learning something new, you prefer:",
+    "options": [
+      { "text": "Reading and studying independently", "type": "I" },
+      { "text": "Discussing and learning with others", "type": "E" }
+    ]
+  },
+  {
+    "id": 15,
+    "dimension": "EI",
+    "question": "In social situations, you feel:",
+    "options": [
+      { "text": "Comfortable being quiet", "type": "I" },
+      { "text": "Uncomfortable with silence", "type": "E" }
+    ]
+  },
+  {
+    "id": 16,
+    "dimension": "SN",
+    "question": "You prefer to focus on:",
+    "options": [
+      { "text": "Facts and details", "type": "S" },
+      { "text": "Possibilities and ideas", "type": "N" }
+    ]
+  },
+  {
+    "id": 17,
+    "dimension": "SN",
+    "question": "You are more interested in:",
+    "options": [
+      { "text": "What is real and practical", "type": "S" },
+      { "text": "What is possible and theoretical", "type": "N" }
+    ]
+  },
+  {
+    "id": 18,
+    "dimension": "SN",
+    "question": "When solving problems, you rely on:",
+    "options": [
+      { "text": "Past experience and proven methods", "type": "S" },
+      { "text": "Innovation and new approaches", "type": "N" }
+    ]
+  },
+  {
+    "id": 19,
+    "dimension": "SN",
+    "question": "You would rather work with:",
+    "options": [
+      { "text": "Concrete facts and data", "type": "S" },
+      { "text": "Abstract concepts and theories", "type": "N" }
+    ]
+  },
+  {
+    "id": 20,
+    "dimension": "SN",
+    "question": "When reading, you prefer:",
+    "options": [
+      { "text": "Literal and straightforward content", "type": "S" },
+      { "text": "Figurative and metaphorical content", "type": "N" }
+    ]
+  },
+  {
+    "id": 21,
+    "dimension": "SN",
+    "question": "You tend to trust:",
+    "options": [
+      { "text": "Your five senses and direct experience", "type": "S" },
+      { "text": "Your intuition and gut feelings", "type": "N" }
+    ]
+  },
+  {
+    "id": 22,
+    "dimension": "SN",
+    "question": "You are more impressed by:",
+    "options": [
+      { "text": "Practical skills and applications", "type": "S" },
+      { "text": "Imaginative vision and creativity", "type": "N" }
+    ]
+  },
+  {
+    "id": 23,
+    "dimension": "SN",
+    "question": "When giving directions, you:",
+    "options": [
+      { "text": "Give specific, step-by-step instructions", "type": "S" },
+      { "text": "Give a general overview and landmarks", "type": "N" }
+    ]
+  },
+  {
+    "id": 24,
+    "dimension": "SN",
+    "question": "You prefer jobs that involve:",
+    "options": [
+      { "text": "Routine and consistency", "type": "S" },
+      { "text": "Variety and change", "type": "N" }
+    ]
+  },
+  {
+    "id": 25,
+    "dimension": "SN",
+    "question": "When learning, you focus on:",
+    "options": [
+      { "text": "The specific details and facts", "type": "S" },
+      { "text": "The big picture and patterns", "type": "N" }
+    ]
+  },
+  {
+    "id": 26,
+    "dimension": "SN",
+    "question": "You are more interested in:",
+    "options": [
+      { "text": "What actually is", "type": "S" },
+      { "text": "What could be", "type": "N" }
+    ]
+  },
+  {
+    "id": 27,
+    "dimension": "SN",
+    "question": "You value more:",
+    "options": [
+      { "text": "Common sense and practicality", "type": "S" },
+      { "text": "Imagination and innovation", "type": "N" }
+    ]
+  },
+  {
+    "id": 28,
+    "dimension": "SN",
+    "question": "When working on a task, you:",
+    "options": [
+      { "text": "Focus on the present moment", "type": "S" },
+      { "text": "Think about future implications", "type": "N" }
+    ]
+  },
+  {
+    "id": 29,
+    "dimension": "SN",
+    "question": "You prefer information that is:",
+    "options": [
+      { "text": "Concrete and specific", "type": "S" },
+      { "text": "Abstract and conceptual", "type": "N" }
+    ]
+  },
+  {
+    "id": 30,
+    "dimension": "SN",
+    "question": "You are more drawn to:",
+    "options": [
+      { "text": "Proven and traditional methods", "type": "S" },
+      { "text": "Novel and experimental approaches", "type": "N" }
+    ]
+  },
+  {
+    "id": 31,
+    "dimension": "TF",
+    "question": "When making decisions, you rely more on:",
+    "options": [
+      { "text": "Logic and objective analysis", "type": "T" },
+      { "text": "Values and how it affects people", "type": "F" }
+    ]
+  },
+  {
+    "id": 32,
+    "dimension": "TF",
+    "question": "When someone is upset, you are more likely to:",
+    "options": [
+      { "text": "Try to solve their problem logically", "type": "T" },
+      { "text": "Try to understand and support them emotionally", "type": "F" }
+    ]
+  },
+  {
+    "id": 33,
+    "dimension": "TF",
+    "question": "You value more:",
+    "options": [
+      { "text": "Truth and justice", "type": "T" },
+      { "text": "Harmony and compassion", "type": "F" }
+    ]
+  },
+  {
+    "id": 34,
+    "dimension": "TF",
+    "question": "When criticized, you:",
+    "options": [
+      { "text": "Focus on whether the criticism is logical and fair", "type": "T" },
+      { "text": "Consider how it makes you and others feel", "type": "F" }
+    ]
+  },
+  {
+    "id": 35,
+    "dimension": "TF",
+    "question": "You are more concerned with being:",
+    "options": [
+      { "text": "Right and accurate", "type": "T" },
+      { "text": "Tactful and considerate", "type": "F" }
+    ]
+  },
+  {
+    "id": 36,
+    "dimension": "TF",
+    "question": "In conflicts, you prioritize:",
+    "options": [
+      { "text": "Finding the logical solution", "type": "T" },
+      { "text": "Maintaining relationships", "type": "F" }
+    ]
+  },
+  {
+    "id": 37,
+    "dimension": "TF",
+    "question": "You prefer to be seen as:",
+    "options": [
+      { "text": "Competent and capable", "type": "T" },
+      { "text": "Warm and caring", "type": "F" }
+    ]
+  },
+  {
+    "id": 38,
+    "dimension": "TF",
+    "question": "When giving feedback, you:",
+    "options": [
+      { "text": "Focus on what needs improvement", "type": "T" },
+      { "text": "Consider how the person will feel", "type": "F" }
+    ]
+  },
+  {
+    "id": 39,
+    "dimension": "TF",
+    "question": "You make decisions based on:",
+    "options": [
+      { "text": "Objective criteria and principles", "type": "T" },
+      { "text": "Personal values and impact on others", "type": "F" }
+    ]
+  },
+  {
+    "id": 40,
+    "dimension": "TF",
+    "question": "In disagreements, you:",
+    "options": [
+      { "text": "Argue your point with logic", "type": "T" },
+      { "text": "Seek consensus and mutual understanding", "type": "F" }
+    ]
+  },
+  {
+    "id": 41,
+    "dimension": "TF",
+    "question": "You are more motivated by:",
+    "options": [
+      { "text": "Achievement and accomplishment", "type": "T" },
+      { "text": "Appreciation and recognition", "type": "F" }
+    ]
+  },
+  {
+    "id": 42,
+    "dimension": "TF",
+    "question": "When making tough choices, you:",
+    "options": [
+      { "text": "Analyze pros and cons objectively", "type": "T" },
+      { "text": "Consider how it affects people involved", "type": "F" }
+    ]
+  },
+  {
+    "id": 43,
+    "dimension": "TF",
+    "question": "You would rather be:",
+    "options": [
+      { "text": "Respected for your competence", "type": "T" },
+      { "text": "Liked for your kindness", "type": "F" }
+    ]
+  },
+  {
+    "id": 44,
+    "dimension": "TF",
+    "question": "In team settings, you focus on:",
+    "options": [
+      { "text": "Task completion and efficiency", "type": "T" },
+      { "text": "Team morale and cohesion", "type": "F" }
+    ]
+  },
+  {
+    "id": 45,
+    "dimension": "TF",
+    "question": "You believe rules should be:",
+    "options": [
+      { "text": "Applied consistently regardless of circumstances", "type": "T" },
+      { "text": "Flexible based on individual situations", "type": "F" }
+    ]
+  },
+  {
+    "id": 46,
+    "dimension": "JP",
+    "question": "You prefer to:",
+    "options": [
+      { "text": "Have things planned and organized", "type": "J" },
+      { "text": "Keep your options open and flexible", "type": "P" }
+    ]
+  },
+  {
+    "id": 47,
+    "dimension": "JP",
+    "question": "You work better when:",
+    "options": [
+      { "text": "You have a clear schedule and deadlines", "type": "J" },
+      { "text": "You can work at your own pace", "type": "P" }
+    ]
+  },
+  {
+    "id": 48,
+    "dimension": "JP",
+    "question": "Your workspace is usually:",
+    "options": [
+      { "text": "Neat and organized", "type": "J" },
+      { "text": "Flexible and adaptable to current needs", "type": "P" }
+    ]
+  },
+  {
+    "id": 49,
+    "dimension": "JP",
+    "question": "When starting a project, you:",
+    "options": [
+      { "text": "Make a detailed plan before beginning", "type": "J" },
+      { "text": "Jump in and figure it out as you go", "type": "P" }
+    ]
+  },
+  {
+    "id": 50,
+    "dimension": "JP",
+    "question": "You feel more comfortable when things are:",
+    "options": [
+      { "text": "Decided and settled", "type": "J" },
+      { "text": "Open-ended and flexible", "type": "P" }
+    ]
+  },
+  {
+    "id": 51,
+    "dimension": "JP",
+    "question": "When faced with a deadline, you:",
+    "options": [
+      { "text": "Finish well ahead of time", "type": "J" },
+      { "text": "Work best under pressure at the last minute", "type": "P" }
+    ]
+  },
+  {
+    "id": 52,
+    "dimension": "JP",
+    "question": "Your approach to tasks is more:",
+    "options": [
+      { "text": "Methodical and systematic", "type": "J" },
+      { "text": "Spontaneous and adaptable", "type": "P" }
+    ]
+  },
+  {
+    "id": 53,
+    "dimension": "JP",
+    "question": "You prefer vacations that are:",
+    "options": [
+      { "text": "Carefully planned in advance", "type": "J" },
+      { "text": "Spontaneous and go-with-the-flow", "type": "P" }
+    ]
+  },
+  {
+    "id": 54,
+    "dimension": "JP",
+    "question": "When working on multiple tasks, you:",
+    "options": [
+      { "text": "Focus on one task at a time", "type": "J" },
+      { "text": "Like to multitask and switch between them", "type": "P" }
+    ]
+  },
+  {
+    "id": 55,
+    "dimension": "JP",
+    "question": "You feel stressed when:",
+    "options": [
+      { "text": "Things are disorganized and chaotic", "type": "J" },
+      { "text": "Things are too rigid and structured", "type": "P" }
+    ]
+  },
+  {
+    "id": 56,
+    "dimension": "JP",
+    "question": "Making lists and schedules is:",
+    "options": [
+      { "text": "Essential to how you function", "type": "J" },
+      { "text": "Constraining and unnecessary", "type": "P" }
+    ]
+  },
+  {
+    "id": 57,
+    "dimension": "JP",
+    "question": "When shopping, you:",
+    "options": [
+      { "text": "Make a list and stick to it", "type": "J" },
+      { "text": "Browse and see what catches your eye", "type": "P" }
+    ]
+  },
+  {
+    "id": 58,
+    "dimension": "JP",
+    "question": "You prefer lifestyles that are:",
+    "options": [
+      { "text": "Structured and predictable", "type": "J" },
+      { "text": "Open and spontaneous", "type": "P" }
+    ]
+  },
+  {
+    "id": 59,
+    "dimension": "JP",
+    "question": "Unfinished tasks make you feel:",
+    "options": [
+      { "text": "Anxious until they're completed", "type": "J" },
+      { "text": "Fine, you'll get to them eventually", "type": "P" }
+    ]
+  },
+  {
+    "id": 60,
+    "dimension": "JP",
+    "question": "Your ideal work environment is:",
+    "options": [
+      { "text": "Well-organized with clear procedures", "type": "J" },
+      { "text": "Flexible with room for improvisation", "type": "P" }
+    ]
+  }
+]

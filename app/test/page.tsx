@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 interface Question {
   id: number
+  dimension: string
   question: string
   options: {
     text: string
@@ -12,72 +13,15 @@ interface Question {
   }[]
 }
 
-const questions: Question[] = [
-  {
-    id: 1,
-    question: 'At a party, you are more likely to:',
-    options: [
-      { text: 'Spend time with a small group of close friends', type: 'I' },
-      { text: 'Mingle with many different people', type: 'E' },
-    ],
-  },
-  {
-    id: 2,
-    question: 'You prefer to:',
-    options: [
-      { text: 'Focus on facts and details', type: 'S' },
-      { text: 'Focus on possibilities and ideas', type: 'N' },
-    ],
-  },
-  {
-    id: 3,
-    question: 'When making decisions, you rely more on:',
-    options: [
-      { text: 'Logic and objective analysis', type: 'T' },
-      { text: 'Values and how it affects people', type: 'F' },
-    ],
-  },
-  {
-    id: 4,
-    question: 'You prefer to:',
-    options: [
-      { text: 'Have things planned and organized', type: 'J' },
-      { text: 'Keep your options open and flexible', type: 'P' },
-    ],
-  },
-  {
-    id: 5,
-    question: 'After a long day, you prefer to:',
-    options: [
-      { text: 'Spend time alone to recharge', type: 'I' },
-      { text: 'Spend time with others to recharge', type: 'E' },
-    ],
-  },
-  {
-    id: 6,
-    question: 'You are more interested in:',
-    options: [
-      { text: 'What is real and practical', type: 'S' },
-      { text: 'What is possible and theoretical', type: 'N' },
-    ],
-  },
-  {
-    id: 7,
-    question: 'When someone is upset, you are more likely to:',
-    options: [
-      { text: 'Try to solve their problem logically', type: 'T' },
-      { text: 'Try to understand and support them emotionally', type: 'F' },
-    ],
-  },
-  {
-    id: 8,
-    question: 'You work better when:',
-    options: [
-      { text: 'You have a clear schedule and deadlines', type: 'J' },
-      { text: 'You can work at your own pace', type: 'P' },
-    ],
-  },
-]
+let questionsData: Question[] = []
+
+// Load questions from JSON file
+if (typeof window !== 'undefined') {
+  fetch('/data/questions.json')
+    .then(res => res.json())
+    .then(data => questionsData = data)
+    .catch(err => console.error('Failed to load questions:', err))
+}
 
 const personalityTypes: Record<string, { name: string; description: string }> = {
   INTJ: { name: 'The Architect', description: 'Imaginative and strategic thinkers, with a plan for everything.' },
@@ -99,11 +43,26 @@ const personalityTypes: Record<string, { name: string; description: string }> = 
 }
 
 export default function TestPage() {
+  const [questions, setQuestions] = useState<Question[]>([])
+  const [loading, setLoading] = useState(true)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<string, number>>({
     E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0,
   })
   const [result, setResult] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch('/data/questions.json')
+      .then(res => res.json())
+      .then(data => {
+        setQuestions(data)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error('Failed to load questions:', err)
+        setLoading(false)
+      })
+  }, [])
 
   const handleAnswer = (type: 'E' | 'I' | 'S' | 'N' | 'T' | 'F' | 'J' | 'P') => {
     const newAnswers = { ...answers }
@@ -128,6 +87,22 @@ export default function TestPage() {
     setCurrentQuestion(0)
     setAnswers({ E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 })
     setResult(null)
+  }
+
+  if (loading) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gradient-to-b from-blue-50 to-white">
+        <div className="text-2xl text-gray-600">Loading questions...</div>
+      </main>
+    )
+  }
+
+  if (questions.length === 0) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gradient-to-b from-blue-50 to-white">
+        <div className="text-2xl text-red-600">Failed to load questions. Please try again.</div>
+      </main>
+    )
   }
 
   if (result) {

@@ -1,6 +1,6 @@
 # Personality Test Platform
 
-A production-ready MBTI-inspired personality assessment platform with freemium/premium monetization, built with .NET 8, Angular 17, PostgreSQL, and Stripe.
+A production-ready MBTI-inspired personality assessment platform with freemium/premium monetization, built with Next.js 14, TypeScript, Prisma, and Stripe.
 
 ## 🚀 Features
 
@@ -15,37 +15,37 @@ A production-ready MBTI-inspired personality assessment platform with freemium/p
 - **Test History**: Track all past attempts with detailed scores
 
 ### Technical Highlights
-- **Clean Architecture**: Domain → Application → Infrastructure → API layers
-- **Security First**: Argon2id password hashing, JWT auth, rate limiting, OWASP ASVS compliance
-- **Scalable**: Stateless API, S3 storage, horizontal scaling ready
-- **Modern Stack**: .NET 8, Angular 17 standalone components, PostgreSQL 16
-- **Fully Dockerized**: Complete Docker Compose setup for development
-- **Production Ready**: Logging, monitoring, error handling, migrations
+- **Modern Full-Stack**: Next.js 14 App Router with Server Components and API Routes
+- **Security First**: bcryptjs password hashing, NextAuth JWT authentication
+- **Type-Safe**: Full TypeScript implementation with Zod validation
+- **Modern Stack**: Next.js 14, React 18, Prisma ORM, SQLite/PostgreSQL
+- **Payment Integration**: Stripe Checkout with webhook handling
+- **Production Ready**: PDF generation, logging, error handling, database migrations
 
 ## 📋 Prerequisites
 
-- [Docker](https://www.docker.com/get-started) & Docker Compose
-- [.NET 8 SDK](https://dotnet.microsoft.com/download) (for local development)
-- [Node.js 20+](https://nodejs.org/) (for local frontend development)
-- [PostgreSQL 16](https://www.postgresql.org/download/) (optional, included in Docker)
+- [Node.js 20+](https://nodejs.org/)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+- [PostgreSQL](https://www.postgresql.org/download/) (optional, SQLite works for development)
 
 ## 🏗️ Architecture
 
 ```
-┌─────────────────┐
-│  Angular 17 SPA │  (Standalone Components + Material + Tailwind)
-└────────┬────────┘
-         │ HTTPS/JSON
-┌────────▼────────┐
-│  .NET 8 Web API │  (Clean Architecture + JWT Auth)
-└────────┬────────┘
-         │
-┌────────▼─────────────────┬────────────────┬───────────────┐
-│   PostgreSQL 16          │  MinIO (S3)    │  Stripe       │
-└──────────────────────────┴────────────────┴───────────────┘
+┌─────────────────────────────────────┐
+│  Next.js 14 Full-Stack Application  │
+│  ┌─────────────┐   ┌─────────────┐ │
+│  │  React UI   │   │  API Routes │ │
+│  │  (App Dir)  │◄─►│  (Backend)  │ │
+│  └─────────────┘   └─────────────┘ │
+└──────────────┬──────────────────────┘
+               │
+    ┌──────────▼──────────┬────────────┐
+    │  Prisma ORM         │  Stripe    │
+    │  (SQLite/Postgres)  │            │
+    └─────────────────────┴────────────┘
 ```
 
-## 🚀 Quick Start (Docker Compose)
+## 🚀 Quick Start
 
 ### 1. Clone and Configure
 
@@ -53,142 +53,107 @@ A production-ready MBTI-inspired personality assessment platform with freemium/p
 git clone <repository-url>
 cd Lab7-PersonalityTest
 
-# Copy environment template
-cp .env.sample .env
+# Install dependencies
+npm install
 
-# Edit .env with your settings (Stripe keys, SMTP, etc.)
+# Copy environment template
+cp .env.example .env
+
+# Edit .env with your settings (Stripe keys, NextAuth secret, etc.)
 nano .env
 ```
 
-### 2. Start All Services
+### 2. Set Up Database
 
 ```bash
-# Start all services (API, Frontend, DB, MinIO)
-docker-compose up -d
+# Generate Prisma Client
+npx prisma generate
 
-# Check logs
-docker-compose logs -f
+# Run database migrations
+npx prisma migrate dev
 
-# Services will be available at:
-# - Frontend: http://localhost:4200
-# - API: http://localhost:5000
-# - API Docs (Swagger): http://localhost:5000/swagger
-# - MinIO Console: http://localhost:9001
-# - MailHog (dev email): http://localhost:8025
+# (Optional) Open Prisma Studio to view data
+npx prisma studio
 ```
 
-### 3. Run Database Migrations
+### 3. Start Development Server
 
 ```bash
-# Enter API container
-docker-compose exec api bash
-
-# Run migrations
-dotnet ef database update --project /app/PersonalityTest.Infrastructure.dll
-
-# Seed test data (optional)
-dotnet run --seed
+npm run dev
 ```
 
 ### 4. Access the Application
 
-- **Frontend**: http://localhost:4200
-- **API Documentation**: http://localhost:5000/swagger
-- **Email Testing** (MailHog): http://localhost:8025
+- **Application**: http://localhost:3000
+- **Prisma Studio**: http://localhost:5555 (if running)
 
-## 🛠️ Local Development Setup
-
-### Backend (.NET 8 API)
+## 🛠️ Development Commands
 
 ```bash
-cd backend
+# Start development server
+npm run dev
 
-# Restore dependencies
-dotnet restore
+# Build for production
+npm run build
 
-# Update connection string in appsettings.json
-# Set environment variables (see .env.sample)
-
-# Run migrations
-cd src/PersonalityTest.API
-dotnet ef database update --project ../PersonalityTest.Infrastructure/PersonalityTest.Infrastructure.csproj
-
-# Start API
-dotnet run
-
-# API runs on: https://localhost:5000
-# Swagger UI: https://localhost:5000/swagger
-```
-
-### Frontend (Angular 17)
-
-```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Update API URL in src/environments/environment.ts
-
-# Start dev server
+# Start production server
 npm start
 
-# Frontend runs on: http://localhost:4200
+# Run linter
+npm run lint
+
+# Prisma commands
+npx prisma generate      # Generate Prisma Client
+npx prisma migrate dev   # Run migrations in development
+npx prisma studio        # Open Prisma Studio GUI
 ```
 
 ## 📦 Project Structure
 
 ```
 Lab7-PersonalityTest/
-├── backend/
-│   ├── src/
-│   │   ├── PersonalityTest.Domain/        # Entities, ValueObjects, Enums
-│   │   ├── PersonalityTest.Application/   # DTOs, Interfaces, Services
-│   │   ├── PersonalityTest.Infrastructure/ # EF Core, Repositories, External Services
-│   │   └── PersonalityTest.API/           # Controllers, Middleware, Startup
-│   ├── data/
-│   │   └── questions-v1.json             # 60-question test bank
-│   └── Dockerfile
-├── frontend/
-│   ├── src/
-│   │   └── app/
-│   │       ├── core/                     # Guards, Interceptors, Services
-│   │       ├── features/                 # Feature modules (Auth, Test, Results)
-│   │       └── shared/                   # Shared components
-│   └── Dockerfile
-├── docker-compose.yml                     # Complete dev environment
-├── .env.sample                           # Environment variables template
+├── app/
+│   ├── api/                              # API Routes (Backend)
+│   │   ├── auth/                         # Authentication endpoints
+│   │   ├── test/                         # Test submission & results
+│   │   └── payments/                     # Stripe integration
+│   ├── auth/                             # Auth pages (signin, signup)
+│   ├── test/                             # Test taking page
+│   ├── about/                            # About page
+│   ├── layout.tsx                        # Root layout
+│   └── page.tsx                          # Home page
+├── lib/                                  # Utility functions
+│   └── pdf-generator.ts                  # PDF generation logic
+├── prisma/
+│   ├── schema.prisma                     # Database schema
+│   └── dev.db                            # SQLite database (dev)
+├── public/
+│   └── data/
+│       └── questions.json                # 60-question test bank
+├── .env.example                          # Environment variables template
+├── package.json
 └── README.md
 ```
 
 ## 🔑 Environment Variables
 
-Critical environment variables (see `.env.sample` for full list):
+Critical environment variables (see `.env.example` for full list):
 
 ```env
 # Database
-POSTGRES_DB=personalitytest
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_secure_password
+DATABASE_URL="file:./prisma/dev.db"
 
-# JWT
-JWT_SECRET_KEY=your-super-secret-jwt-key-minimum-32-characters
+# NextAuth
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-nextauth-secret-key-change-this-in-production"
 
 # Stripe
-STRIPE_SECRET_KEY=sk_test_xxx
-STRIPE_PUBLISHABLE_KEY=pk_test_xxx
-STRIPE_WEBHOOK_SECRET=whsec_xxx
+STRIPE_SECRET_KEY="sk_test_xxx"
+STRIPE_PUBLISHABLE_KEY="pk_test_xxx"
+STRIPE_WEBHOOK_SECRET="whsec_xxx"
 
-# Email (SMTP)
-EMAIL_SMTP_HOST=smtp.gmail.com
-EMAIL_SMTP_PORT=587
-EMAIL_SMTP_USER=your-email@gmail.com
-EMAIL_SMTP_PASSWORD=your-app-password
-
-# S3 Storage
-S3_SERVICE_URL=http://localhost:9000
-S3_ACCESS_KEY=minioadmin
-S3_SECRET_KEY=minioadmin
+# Application
+NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 ```
 
 ## 📊 Database Schema
@@ -204,51 +169,35 @@ Key entities:
 - **Shares**: Social sharing functionality
 - **Invitations**: Friend invites
 
-## 📄 API Documentation
-
-### Swagger/OpenAPI
-
-Access interactive API documentation:
-- **Development**: http://localhost:5000/swagger
-- **Production**: https://api.your-domain.com/swagger
+## 📄 API Routes
 
 ### Key Endpoints
 
 ```
 Authentication:
-POST   /api/auth/register
-POST   /api/auth/login
-POST   /api/auth/refresh
-POST   /api/auth/verify-email
-POST   /api/auth/forgot-password
-POST   /api/auth/reset-password
+POST   /api/auth/register           # Create new user account
+POST   /api/auth/[...nextauth]      # NextAuth endpoints (signin, callback, etc.)
 
 Test:
-POST   /api/test/start
-PATCH  /api/test/attempts/{id}/answers
-POST   /api/test/attempts/{id}/submit
-GET    /api/test/attempts/{id}/result
-GET    /api/test/history
+POST   /api/test/submit             # Submit test answers
+GET    /api/test/history            # Get user's test history
+GET    /api/test/result/[id]        # Get specific test result
+GET    /api/test/result/[id]/pdf    # Download PDF report (premium only)
 
 Payments:
-POST   /api/payments/checkout
-POST   /api/payments/webhook
-
-Sharing:
-POST   /api/share
-GET    /api/share/{shareCode}
+POST   /api/payments/checkout       # Create Stripe checkout session
+POST   /api/payments/webhook        # Stripe webhook handler
 ```
 
 ## 🔐 Security Features
 
-- **Password Hashing**: Argon2id (OWASP recommendation)
-- **JWT Authentication**: Access + refresh token pattern
-- **Rate Limiting**: IP-based request throttling
-- **Input Validation**: FluentValidation + Angular forms
-- **CSRF Protection**: SameSite cookies
-- **SQL Injection Prevention**: EF Core parameterized queries
-- **XSS Protection**: Angular sanitization + CSP headers
-- **Audit Logging**: All sensitive operations logged
+- **Password Hashing**: bcryptjs with salt rounds
+- **JWT Authentication**: NextAuth with secure session handling
+- **Input Validation**: Zod schema validation on all API routes
+- **SQL Injection Prevention**: Prisma ORM with parameterized queries
+- **XSS Protection**: React automatic escaping + Next.js built-in protections
+- **CSRF Protection**: NextAuth built-in CSRF tokens
+- **Type Safety**: Full TypeScript implementation
 
 ## 📄 Legal Disclaimer
 
@@ -260,6 +209,43 @@ This tool uses a 16-type personality framework for **educational and entertainme
 
 This project is licensed under the MIT License.
 
+## 🚀 Deployment
+
+### Vercel (Recommended)
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Add environment variables in Vercel dashboard
+# Update DATABASE_URL to use PostgreSQL for production
+```
+
+### Database Migration for Production
+
+For production, switch from SQLite to PostgreSQL:
+
+1. Update `prisma/schema.prisma`:
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+2. Update `DATABASE_URL` in your production environment:
+```env
+DATABASE_URL="postgresql://user:password@host:5432/dbname"
+```
+
+3. Run migrations:
+```bash
+npx prisma migrate deploy
+```
+
 ---
 
-**Built with ❤️ using .NET 8, Angular 17, PostgreSQL, and Stripe**
+**Built with ❤️ using Next.js 14, TypeScript, Prisma, and Stripe**
