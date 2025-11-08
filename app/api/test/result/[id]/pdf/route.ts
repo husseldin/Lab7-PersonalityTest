@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { PrismaClient } from '@prisma/client'
-import { authOptions } from '../../../../auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth'
 import { generatePDF } from '../../../../../../lib/pdf-generator'
 
 const prisma = new PrismaClient()
@@ -59,7 +59,7 @@ export async function GET(
       completedAt: testAttempt.completedAt,
     })
 
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(pdfBuffer as unknown as BodyInit, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="personality-report-${testAttempt.personalityType}.pdf"`,

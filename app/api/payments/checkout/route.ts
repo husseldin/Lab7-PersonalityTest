@@ -1,21 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { PrismaClient } from '@prisma/client'
-import Stripe from 'stripe'
 import { z } from 'zod'
-import { authOptions } from '../../auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth'
 
 const prisma = new PrismaClient()
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-11-20.acacia',
-})
 
 const checkoutSchema = z.object({
   testAttemptId: z.number(),
 })
 
+async function getStripeClient() {
+  const Stripe = (await import('stripe')).default
+  return new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+    apiVersion: '2025-02-24.acacia' as any,
+  })
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const stripe = await getStripeClient()
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {

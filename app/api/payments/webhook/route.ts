@@ -1,16 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import Stripe from 'stripe'
 
 const prisma = new PrismaClient()
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-11-20.acacia',
-})
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || ''
 
+async function getStripeClient() {
+  const Stripe = (await import('stripe')).default
+  return new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+    apiVersion: '2025-02-24.acacia' as any,
+  })
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const stripe = await getStripeClient()
     const body = await request.text()
     const signature = request.headers.get('stripe-signature')
 
@@ -21,7 +25,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    let event: Stripe.Event
+    let event
 
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
@@ -36,7 +40,7 @@ export async function POST(request: NextRequest) {
     // Handle the event
     switch (event.type) {
       case 'checkout.session.completed': {
-        const session = event.data.object as Stripe.Checkout.Session
+        const session = event.data.object as any
 
         const payment = await prisma.payment.findUnique({
           where: { stripeSessionId: session.id }
@@ -65,7 +69,7 @@ export async function POST(request: NextRequest) {
 
       case 'checkout.session.expired':
       case 'payment_intent.payment_failed': {
-        const session = event.data.object as Stripe.Checkout.Session
+        const session = event.data.object as any
 
         const payment = await prisma.payment.findUnique({
           where: { stripeSessionId: session.id }
