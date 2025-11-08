@@ -1,0 +1,226 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                      String         @id @default(cuid())
+  email                   String         @unique
+  passwordHash            String
+  fullName                String
+  emailVerified           Boolean        @default(false)
+  emailVerificationToken  String?        @unique
+  passwordResetToken      String?        @unique
+  passwordResetExpiry     DateTime?
+  role                    UserRole       @default(USER)
+  avatarUrl               String?
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+
+  // Relations
+  testAttempts            TestAttempt[]
+  payments                Payment[]
+  entitlements            Entitlement[]
+  shares                  Share[]
+  refreshTokens           RefreshToken[]
+
+  @@map("users")
+}
+
+model QuestionVersion {
+  id                String     @id @default(cuid())
+  versionName       String     @unique
+  description       String?
+  isActive          Boolean    @default(true)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  // Relations
+  questions         Question[]
+  testAttempts      TestAttempt[]
+
+  @@map("question_versions")
+}
+
+model Question {
+  id                String          @id @default(cuid())
+  versionId         String
+  orderIndex        Int
+  text              String
+  dimension         Dimension
+  direction         Direction
+  weight            Float           @default(1.0)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  version           QuestionVersion @relation(fields: [versionId], references: [id])
+  answers           TestAnswer[]
+
+  @@unique([versionId, orderIndex])
+  @@map("questions")
+}
+
+model TestAttempt {
+  id                String          @id @default(cuid())
+  userId            String
+  questionVersionId String
+  status            AttemptStatus   @default(IN_PROGRESS)
+  startedAt         DateTime        @default(now())
+  completedAt       DateTime?
+  resultType        String?
+
+  // Dimension scores
+  scoreE            Int             @default(0)
+  scoreI            Int             @default(0)
+  scoreS            Int             @default(0)
+  scoreN            Int             @default(0)
+  scoreT            Int             @default(0)
+  scoreF            Int             @default(0)
+  scoreJ            Int             @default(0)
+  scoreP            Int             @default(0)
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  user              User            @relation(fields: [userId], references: [id])
+  questionVersion   QuestionVersion @relation(fields: [questionVersionId], references: [id])
+  answers           TestAnswer[]
+  payments          Payment[]
+  entitlement       Entitlement?
+  share             Share?
+
+  @@map("test_attempts")
+}
+
+model TestAnswer {
+  id          String       @id @default(cuid())
+  attemptId   String
+  questionId  String
+  answer      Int
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  attempt     TestAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question    Question     @relation(fields: [questionId], references: [id])
+
+  @@unique([attemptId, questionId])
+  @@map("test_answers")
+}
+
+model Payment {
+  id                    String        @id @default(cuid())
+  userId                String
+  attemptId             String
+  stripePaymentIntentId String        @unique
+  amount                Int
+  currency              String        @default("usd")
+  status                PaymentStatus @default(PENDING)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  // Relations
+  user                  User          @relation(fields: [userId], references: [id])
+  attempt               TestAttempt   @relation(fields: [attemptId], references: [id])
+
+  @@map("payments")
+}
+
+model Entitlement {
+  id               String          @id @default(cuid())
+  userId           String
+  attemptId        String          @unique
+  type             EntitlementType
+  grantedAt        DateTime        @default(now())
+  expiresAt        DateTime?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  // Relations
+  user             User            @relation(fields: [userId], references: [id])
+  attempt          TestAttempt     @relation(fields: [attemptId], references: [id])
+
+  @@map("entitlements")
+}
+
+model Share {
+  id          String        @id @default(cuid())
+  userId      String
+  attemptId   String        @unique
+  shareCode   String        @unique
+  privacy     SharePrivacy  @default(PUBLIC)
+  expiresAt   DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  user        User          @relation(fields: [userId], references: [id])
+  attempt     TestAttempt   @relation(fields: [attemptId], references: [id])
+
+  @@map("shares")
+}
+
+model RefreshToken {
+  id          String   @id @default(cuid())
+  userId      String
+  token       String   @unique
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+// Enums
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum Dimension {
+  EI  // Extraversion vs Introversion
+  SN  // Sensing vs Intuition
+  TF  // Thinking vs Feeling
+  JP  // Judging vs Perceiving
+}
+
+enum Direction {
+  POSITIVE
+  NEGATIVE
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum EntitlementType {
+  COMPLETE_REPORT
+  PREMIUM_FEATURES
+}
+
+enum SharePrivacy {
+  PUBLIC
+  PRIVATE
+  UNLISTED
+}
