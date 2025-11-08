@@ -11,7 +11,70 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  name          String?
+  password      String
+  emailVerified DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  testAttempts  TestAttempt[]
+  payments      Payment[]
+  invitations   Invitation[]   @relation("InvitationSender")
+}
+
+model TestAttempt {
+  id               Int       @id @default(autoincrement())
+  userId           Int
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers          String    // JSON string of answers
+  personalityType  String    // E.g., "INTJ"
+  scores           String    // JSON string of dimension scores
+  completedAt      DateTime  @default(now())
+  hasPremiumAccess Boolean   @default(false)
+  shares           Share[]
+
+  @@index([userId])
+}
+
+model Payment {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testAttemptId   Int?
+  stripeSessionId String   @unique
+  stripePaymentId String?
+  amount          Int      // Amount in cents
+  status          String   // pending, completed, failed
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([stripeSessionId])
+}
+
+model Share {
+  id            Int         @id @default(autoincrement())
+  testAttemptId Int
+  testAttempt   TestAttempt @relation(fields: [testAttemptId], references: [id], onDelete: Cascade)
+  shareCode     String      @unique
+  privacy       String      @default("public") // public, friends, private
+  createdAt     DateTime    @default(now())
+  expiresAt     DateTime?
+
+  @@index([shareCode])
+}
+
+model Invitation {
+  id         Int      @id @default(autoincrement())
+  senderId   Int
+  sender     User     @relation("InvitationSender", fields: [senderId], references: [id], onDelete: Cascade)
+  email      String
+  token      String   @unique
+  status     String   @default("pending") // pending, accepted, expired
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+
+  @@index([token])
+  @@index([email])
 }
