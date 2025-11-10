@@ -1,20 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
-import { z } from 'zod'
+import { registrationSchema } from '@/lib/validation'
+import { createVerificationToken } from '@/lib/tokens'
+import { sendVerificationEmail } from '@/lib/email'
+import { logActivity } from '@/lib/activity-logger'
+import { isRateLimited, getClientIp, RATE_LIMITS } from '@/lib/rate-limit'
 
 const prisma = new PrismaClient()
 
-const registerSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-  name: z.string().min(1).optional(),
-})
-
 export async function POST(request: NextRequest) {
   try {
+    // Check rate limit
+    const clientIp = getClientIp(request.headers)
+    if (isRateLimited(clientIp, RATE_LIMITS.auth)) {
+      return NextResponse.json(
+        { error: 'Too many registration attempts. Please try again later.' },
+        { status: 429 }
+      )
+    }
+
     const body = await request.json()
-    const validatedData = registerSchema.parse(body)
+    const validatedData = registrationSchema.parse(body)
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
@@ -46,9 +53,19 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    return NextResponse.json({ user }, { status: 201 })
-  } catch (error) {
-    if (error instanceof z.ZodError) {
+    // Log signup activity
+    await logActivity(user.id, 'signup', 'New user registered')
+
+    // Create verification token and send email
+    const verificationToken = await createVerificationToken(user.id, 'email_verification')
+    await sendVerificationEmail(user.email, user.name || 'User', verificationToken)
+
+    return NextResponse.json({
+      user,
+      message: 'Registration successful. Please check your email to verify your account.'
+    }, { status: 201 })
+  } catch (error: any) {
+    if (error.name === 'ZodError') {
       return NextResponse.json(
         { error: 'Invalid input', details: error.errors },
         { status: 400 }
