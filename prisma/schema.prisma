@@ -11,16 +11,24 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  email         String         @unique
-  name          String?
-  password      String
-  emailVerified DateTime?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  testAttempts  TestAttempt[]
-  payments      Payment[]
-  invitations   Invitation[]   @relation("InvitationSender")
+  id                    Int                    @id @default(autoincrement())
+  email                 String                 @unique
+  name                  String?
+  password              String
+  emailVerified         DateTime?
+  image                 String?
+  bio                   String?
+  role                  String                 @default("user") // user, admin
+  isActive              Boolean                @default(true)
+  lastLoginAt           DateTime?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  testAttempts          TestAttempt[]
+  payments              Payment[]
+  invitations           Invitation[]           @relation("InvitationSender")
+  verificationTokens    VerificationToken[]
+  passwordResetTokens   PasswordResetToken[]
+  activityLogs          ActivityLog[]
 }
 
 model TestAttempt {
@@ -77,4 +85,46 @@ model Invitation {
 
   @@index([token])
   @@index([email])
+}
+
+model VerificationToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  type      String   // email_verification, email_change
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([token])
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([token])
+  @@index([userId])
+}
+
+model ActivityLog {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action      String   // login, logout, test_started, test_completed, profile_updated, etc.
+  description String?
+  ipAddress   String?
+  userAgent   String?
+  metadata    String?  // JSON string for additional data
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
 }
