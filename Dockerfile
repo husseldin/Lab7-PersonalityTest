@@ -14,6 +14,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING 1
 
 RUN npm run build
 

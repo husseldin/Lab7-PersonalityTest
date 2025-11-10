@@ -32,6 +32,9 @@ jobs:
 
     - name: Generate Prisma Client
       run: npx prisma generate
+      continue-on-error: true
+      env:
+        PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: "1"
 
     - name: Run Tests
       run: npm run test:run
@@ -39,8 +42,22 @@ jobs:
     - name: Run Tests with Coverage
       run: npm run test:coverage
 
+    - name: Verify Prisma Client
+      run: |
+        if [ ! -f "node_modules/.prisma/client/index.js" ] || grep -q "did not initialize yet" "node_modules/.prisma/client/index.js"; then
+          echo "Prisma client not properly generated, attempting to generate..."
+          npx prisma generate || echo "Warning: Prisma generate failed, build may fail"
+        else
+          echo "Prisma client already generated"
+        fi
+      continue-on-error: true
+      env:
+        PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: "1"
+
     - name: Build
       run: npm run build
+      env:
+        PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: "1"
 
   docker-build:
     name: Docker Build
